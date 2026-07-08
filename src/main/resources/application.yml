@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: authorization-service
+  profiles:
+    active: dev
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://ep-still-waterfall-ah6c9o11.c-3.us-east-1.aws.neon.tech/authorization-service}
+    username: ${DB_USERNAME:neondb_owner}
+    password: ${DB_PASSWORD:npg_zrkJtY0cjs8X}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8082}
+
+app:
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:*}
+  security:
+    jwt-secret: ${JWT_SECRET:9e1c6f5a3b4d8f0e2c7a1b9d6f4e8a3c7d2f5b1a9e6c3d8f0b4a7c2e5d9f1a6}
+  identity-service:
+    base-url: ${IDENTITY_SERVICE_BASE_URL:http://localhost:8081}
+    user-validation-enabled: ${IDENTITY_USER_VALIDATION_ENABLED:true}
+    service-token: ${IDENTITY_SERVICE_TOKEN:}
