@@ -115,9 +115,6 @@ CREATE TABLE super_users (
 
 CREATE INDEX ix_super_users_id_user ON super_users(id_user);
 
-INSERT INTO super_users (id_user)
-VALUES (1);
-
 CREATE TABLE user_roles (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_user INTEGER NOT NULL,

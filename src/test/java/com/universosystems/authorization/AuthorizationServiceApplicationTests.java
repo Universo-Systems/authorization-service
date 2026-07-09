@@ -10,8 +10,6 @@ import com.universosystems.authorization.features.rolepermissions.domain.models.
 import com.universosystems.authorization.features.roles.application.RoleService;
 import com.universosystems.authorization.features.roles.domain.models.Role;
 import com.universosystems.authorization.features.rolestatuses.application.RoleStatusService;
-import com.universosystems.authorization.features.superusers.application.SuperUserService;
-import com.universosystems.authorization.features.superusers.domain.models.SuperUser;
 import com.universosystems.authorization.features.userroles.application.UserRoleService;
 import com.universosystems.authorization.features.userroles.domain.models.UserRole;
 import org.junit.jupiter.api.Test;
@@ -45,9 +43,6 @@ class AuthorizationServiceApplicationTests {
     @Autowired
     private UserRoleService userRoleService;
 
-    @Autowired
-    private SuperUserService superUserService;
-
     @Test
     void resolvesEffectivePermissionsForDirectAdminRole() {
         Integer activeStatusId = appStatusService.findAll().stream()
@@ -63,8 +58,8 @@ class AuthorizationServiceApplicationTests {
 
         App app = appService.create(App.builder()
                 .idStatus(activeStatusId)
-                .code("ADMIN_US")
-                .name("Admin-US")
+                .code("TEST_ADMIN_US")
+                .name("Test Admin-US")
                 .description("Administracion de Universo Systems")
                 .build());
 
@@ -93,13 +88,13 @@ class AuthorizationServiceApplicationTests {
                 .idRole(role.getId())
                 .build());
 
-        assertThat(permissionService.findEffectiveByUserIdAndAppCode(100, "ADMIN_US"))
+        assertThat(permissionService.findEffectiveByUserIdAndAppCode(100, "TEST_ADMIN_US"))
                 .extracting(Permission::getCode)
                 .containsExactly("users.create");
     }
 
     @Test
-    void resolvesAllAppPermissionsForSuperUser() {
+    void resolvesEffectivePermissionsForSelectedRole() {
         Integer activeStatusId = appStatusService.findAll().stream()
                 .filter(status -> "ACTIVE".equals(status.getName()))
                 .findFirst()
@@ -110,25 +105,45 @@ class AuthorizationServiceApplicationTests {
                 .idStatus(activeStatusId)
                 .code("SUPER_APP")
                 .name("Super App")
-                .description("App para validar superusuarios")
+                .description("App para validar roles seleccionados")
                 .build());
 
-        permissionService.create(Permission.builder()
+        Integer activeRoleStatusId = roleStatusService.findAll().stream()
+                .filter(status -> "ACTIVE".equals(status.getName()))
+                .findFirst()
+                .orElseThrow()
+                .getId();
+
+        Role role = roleService.create(Role.builder()
+                .idApp(app.getId())
+                .idStatus(activeRoleStatusId)
+                .code("SUPER_USUARIO")
+                .name("Super usuario")
+                .description("Acceso total")
+                .build());
+
+        Permission readPermission = permissionService.create(Permission.builder()
                 .idApp(app.getId())
                 .code("reports.read")
                 .name("Leer reportes")
                 .build());
-        permissionService.create(Permission.builder()
+        Permission deletePermission = permissionService.create(Permission.builder()
                 .idApp(app.getId())
                 .code("reports.delete")
                 .name("Eliminar reportes")
                 .build());
 
-        superUserService.create(SuperUser.builder()
-                .idUser(200)
+        rolePermissionService.create(RolePermission.builder()
+                .idRole(role.getId())
+                .idPermission(readPermission.getId())
                 .build());
 
-        assertThat(permissionService.findEffectiveByUserIdAndAppCode(200, "SUPER_APP"))
+        rolePermissionService.create(RolePermission.builder()
+                .idRole(role.getId())
+                .idPermission(deletePermission.getId())
+                .build());
+
+        assertThat(permissionService.findEffectiveByRoleIdAndAppCode(role.getId(), "SUPER_APP"))
                 .extracting(Permission::getCode)
                 .containsExactly("reports.delete", "reports.read");
     }

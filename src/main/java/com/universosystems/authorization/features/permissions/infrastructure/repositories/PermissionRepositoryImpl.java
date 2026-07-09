@@ -39,6 +39,11 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     }
 
     @Override
+    public List<Permission> findEffectiveByRoleIdAndAppCode(Integer idRole, String appCode) {
+        return repository.findEffectiveByRoleIdAndAppCode(idRole, appCode).stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public Optional<Permission> findById(Integer id) {
         return repository.findByIdAndDeletedAtIsNull(id).map(this::toDomain);
     }

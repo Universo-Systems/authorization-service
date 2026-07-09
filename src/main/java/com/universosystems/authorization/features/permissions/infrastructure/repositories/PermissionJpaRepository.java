@@ -37,4 +37,21 @@ public interface PermissionJpaRepository extends JpaRepository<PermissionEntity,
             """)
     List<PermissionEntity> findEffectiveByUserIdAndAppCode(@Param("idUser") Integer idUser,
             @Param("appCode") String appCode);
+
+    @Query("""
+            select distinct permission
+            from PermissionEntity permission
+            join RolePermissionEntity rolePermission on rolePermission.permission.id = permission.id
+            join rolePermission.role role
+            join role.app app
+            where role.id = :idRole
+              and upper(app.code) = upper(:appCode)
+              and role.deletedAt is null
+              and upper(role.status.name) = 'ACTIVE'
+              and permission.deletedAt is null
+              and app.deletedAt is null
+            order by permission.code
+            """)
+    List<PermissionEntity> findEffectiveByRoleIdAndAppCode(@Param("idRole") Integer idRole,
+            @Param("appCode") String appCode);
 }

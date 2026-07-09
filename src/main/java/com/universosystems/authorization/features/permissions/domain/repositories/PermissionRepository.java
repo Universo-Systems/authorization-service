@@ -14,6 +14,8 @@ public interface PermissionRepository {
 
     List<Permission> findEffectiveByUserIdAndAppCode(Integer idUser, String appCode);
 
+    List<Permission> findEffectiveByRoleIdAndAppCode(Integer idRole, String appCode);
+
     Optional<Permission> findById(Integer id);
 
     Optional<Permission> findByAppIdAndCode(Integer idApp, String code);

@@ -3,7 +3,6 @@ package com.universosystems.authorization.features.permissions.application;
 import com.universosystems.authorization.features.apps.application.AppService;
 import com.universosystems.authorization.features.permissions.domain.models.Permission;
 import com.universosystems.authorization.features.permissions.domain.repositories.PermissionRepository;
-import com.universosystems.authorization.features.superusers.application.SuperUserService;
 import com.universosystems.authorization.shared.domain.exceptions.DomainException;
 import com.universosystems.authorization.shared.domain.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 public class PermissionService {
     private final PermissionRepository repository;
     private final AppService appService;
-    private final SuperUserService superUserService;
 
     public List<Permission> findAll(Integer idApp) {
         return idApp == null ? repository.findAll() : repository.findByAppId(idApp);
@@ -24,10 +22,12 @@ public class PermissionService {
 
     public List<Permission> findEffectiveByUserIdAndAppCode(Integer idUser, String appCode) {
         appService.findByCode(appCode);
-        if (superUserService.isSuperUser(idUser)) {
-            return repository.findByAppCode(appCode);
-        }
         return repository.findEffectiveByUserIdAndAppCode(idUser, appCode);
+    }
+
+    public List<Permission> findEffectiveByRoleIdAndAppCode(Integer idRole, String appCode) {
+        appService.findByCode(appCode);
+        return repository.findEffectiveByRoleIdAndAppCode(idRole, appCode);
     }
 
     public Permission findById(Integer id) {

@@ -33,7 +33,13 @@ public class PermissionController {
     }
 
     @GetMapping("/effective")
-    public List<PermissionResponse> obtenerEfectivos(@RequestParam Integer userId, @RequestParam String appCode) {
+    public List<PermissionResponse> obtenerEfectivos(
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) Integer roleId,
+            @RequestParam String appCode) {
+        if (roleId != null) {
+            return service.findEffectiveByRoleIdAndAppCode(roleId, appCode).stream().map(mapper::toResponse).toList();
+        }
         return service.findEffectiveByUserIdAndAppCode(userId, appCode).stream().map(mapper::toResponse).toList();
     }
 
