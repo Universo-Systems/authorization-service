@@ -4,9 +4,9 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: ${DB_URL:jdbc:postgresql://ep-still-waterfall-ah6c9o11.c-3.us-east-1.aws.neon.tech/authorization-service}
-    username: ${DB_USERNAME:neondb_owner}
-    password: ${DB_PASSWORD:npg_zrkJtY0cjs8X}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/authorization-service}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:Christian12345%}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
