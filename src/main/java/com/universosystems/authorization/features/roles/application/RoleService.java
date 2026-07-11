@@ -22,6 +22,10 @@ public class RoleService {
         return idApp == null ? repository.findAll() : repository.findByAppId(idApp);
     }
 
+    public List<Role> findByUserIdAndAppCode(Integer idUser, String appCode) {
+        return repository.findByUserIdAndAppCode(idUser, appCode);
+    }
+
     public Role findById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Rol no encontrado"));

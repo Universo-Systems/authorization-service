@@ -20,6 +20,10 @@ public class AppService {
         return repository.findAll();
     }
 
+    public List<App> findByUserId(Integer idUser) {
+        return repository.findByUserId(idUser);
+    }
+
     public App findById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("App no encontrada"));

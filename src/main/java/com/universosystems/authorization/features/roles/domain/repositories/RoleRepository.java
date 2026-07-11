@@ -10,6 +10,8 @@ public interface RoleRepository {
 
     List<Role> findByAppId(Integer idApp);
 
+    List<Role> findByUserIdAndAppCode(Integer idUser, String appCode);
+
     Optional<Role> findById(Integer id);
 
     Optional<Role> findByAppIdAndCode(Integer idApp, String code);

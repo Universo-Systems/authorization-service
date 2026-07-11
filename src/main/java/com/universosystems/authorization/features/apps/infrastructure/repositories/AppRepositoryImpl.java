@@ -22,6 +22,11 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
+    public List<App> findByUserId(Integer idUser) {
+        return repository.findByUserId(idUser).stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public Optional<App> findById(Integer id) {
         return repository.findByIdAndDeletedAtIsNull(id).map(this::toDomain);
     }

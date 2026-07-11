@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface AppRepository {
     List<App> findAll();
 
+    List<App> findByUserId(Integer idUser);
+
     Optional<App> findById(Integer id);
 
     Optional<App> findByCode(String code);

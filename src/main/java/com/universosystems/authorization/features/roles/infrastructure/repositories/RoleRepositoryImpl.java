@@ -28,6 +28,11 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    public List<Role> findByUserIdAndAppCode(Integer idUser, String appCode) {
+        return repository.findByUserIdAndAppCode(idUser, appCode).stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public Optional<Role> findById(Integer id) {
         return repository.findByIdAndDeletedAtIsNull(id).map(this::toDomain);
     }
