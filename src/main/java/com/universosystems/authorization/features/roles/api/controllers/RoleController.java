@@ -28,8 +28,13 @@ public class RoleController {
     private final RoleMapper mapper;
 
     @GetMapping
-    public List<RoleResponse> obtenerTodos(@RequestParam(required = false) Integer appId) {
-        return service.findAll(appId).stream().map(mapper::toResponse).toList();
+    public List<RoleResponse> obtenerTodos(
+            @RequestParam(required = false) Integer appId,
+            @RequestParam(defaultValue = "false") boolean activeOnly) {
+        var roles = activeOnly && appId != null
+                ? service.findActiveByAppId(appId)
+                : service.findAll(appId);
+        return roles.stream().map(mapper::toResponse).toList();
     }
 
     @GetMapping("/{id}")

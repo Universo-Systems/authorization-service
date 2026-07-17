@@ -28,6 +28,11 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    public List<Role> findActiveByAppId(Integer idApp) {
+        return repository.findActiveByAppId(idApp).stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public List<Role> findByUserIdAndAppCode(Integer idUser, String appCode) {
         return repository.findByUserIdAndAppCode(idUser, appCode).stream().map(this::toDomain).toList();
     }

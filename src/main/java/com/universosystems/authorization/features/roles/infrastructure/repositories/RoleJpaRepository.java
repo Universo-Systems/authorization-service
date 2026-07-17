@@ -14,6 +14,17 @@ public interface RoleJpaRepository extends JpaRepository<RoleEntity, Integer> {
     List<RoleEntity> findByAppIdAndDeletedAtIsNull(Integer idApp);
 
     @Query("""
+            select role
+            from RoleEntity role
+            join role.status roleStatus
+            where role.app.id = :idApp
+              and role.deletedAt is null
+              and upper(roleStatus.name) = 'ACTIVE'
+            order by role.name
+            """)
+    List<RoleEntity> findActiveByAppId(@Param("idApp") Integer idApp);
+
+    @Query("""
             select distinct role
             from UserRoleEntity userRole
             join userRole.role role
